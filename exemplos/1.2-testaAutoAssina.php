@@ -19,7 +19,7 @@
  */
 error_reporting(E_ALL);
 require_once('../libs/AutoToolsNFePHP.class.php');
-$nfe = new ToolsNFePHP;
+$nfe = new AutoToolsNFePHP;
 if (!$nfe->autoSignNFe()){
     echo $nfe->errMsg;
 }

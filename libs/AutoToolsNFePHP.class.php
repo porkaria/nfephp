@@ -68,9 +68,10 @@ class AutoToolsNFePHP extends ToolsNFePHP {
      * @param number $mododebug Opcional 1-SIM ou 0-NÃO (0 default)
      * @return  boolean true sucesso false Erro
      */
-    function __construct($aConfig='',$mododebug=0) {
+    public function __construct($aConfig='',$mododebug=0,$exceptions=false) {
+
        //passa os parâmetros para a classe base 
-       parent::__construct($aConfig,$mododebug);
+       parent::__construct($aConfig,$mododebug,$exceptions=false);
     }
     
     /**
@@ -624,8 +625,8 @@ class AutoToolsNFePHP extends ToolsNFePHP {
                 $filename = $this->assDir.$aName[$x];
                 if ( $nfefile = file_get_contents($filename) ) {
                     //validar
-                    //como os arquivos xsd são atualizados e tem sua verção alterada
-                    //devemos burcar este arquivo da versão correta
+                    //como os arquivos xsd são atualizados e tem sua versão alterada
+                    //devemos buscar este arquivo da versão correta
                     //para isso temos que obter o numero da versão na própria nfe
                     $xmldoc = new DOMDocument();
                     $xmldoc->preservWhiteSpace = false; //elimina espaços em branco

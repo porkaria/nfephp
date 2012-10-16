@@ -38,7 +38,7 @@ if (!defined('PATH_NFEPHP')) {
    define('PATH_NFEPHP', dirname( __FILE__ ));
 }
 
-require_once('config/config.php');
+require_once "../../includes/config.inc.php";
 require_once('libs/ToolsNFePHP.class.php');
 
 $installVer = '1.31';
@@ -193,6 +193,7 @@ if (file_exists($filen)){
     }
 }
 
+/*
 //teste do diretorio de arquivo dos xml
 $cDir = $cRed;
 $wdDir = 'FALHA';
@@ -210,6 +211,7 @@ if (is_dir($arquivosDir)) {
     //dir não existe
     $obsDir= ' Diretório $arquivosDir n&atilde;o existe !!';
 }
+*/
 
 //verificação da validade do certificado
 $nfe = new ToolsNFePHP();

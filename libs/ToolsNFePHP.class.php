@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.27
+ * @version   3.0.23
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -58,7 +58,7 @@
  *              Jorge Luiz Rodrigues Tomé <jlrodriguestome at hotmail dot com>
  *              Leandro C. Lopez <leandro dot castoldi at gmail dot com>
  *              Mario Almeida <prog dot almeida at gmail.com>
- *		Nataniel Fiuza <natan at laxus dot com dot br>
+ *		        Nataniel Fiuza <natan at laxus dot com dot br>
  *              Odair Jose Santos Junior <odairsantosjunior at gmail dot com>
  *              Paulo Gabriel Coghi <paulocoghi at gmail dot com>
  *              Paulo Henrique Demori <phdemori at hotmail dot com>
@@ -408,13 +408,13 @@ class ToolsNFePHP {
      * Instância do WebService
      * @var string
      */
-    private $URLxsi='http://www.w3.org/2001/XMLSchema-instance';
+    protected $URLxsi='http://www.w3.org/2001/XMLSchema-instance';
     /**
      * URLxsd
      * Instância do WebService
      * @var string
      */
-    private $URLxsd='http://www.w3.org/2001/XMLSchema';
+    protected $URLxsd='http://www.w3.org/2001/XMLSchema';
     /**
      * URLnfe
      * Instância do WebService
@@ -426,37 +426,37 @@ class ToolsNFePHP {
      * Instância do WebService
      * @var string
      */
-    private $URLdsig='http://www.w3.org/2000/09/xmldsig#';
+     protected $URLdsig='http://www.w3.org/2000/09/xmldsig#';
     /**
      * URLCanonMeth
      * Instância do WebService
      * @var string
      */
-    private $URLCanonMeth='http://www.w3.org/TR/2001/REC-xml-c14n-20010315';
+    protected $URLCanonMeth='http://www.w3.org/TR/2001/REC-xml-c14n-20010315';
     /**
      * URLSigMeth
      * Instância do WebService
      * @var string
      */
-    private $URLSigMeth='http://www.w3.org/2000/09/xmldsig#rsa-sha1';
+    protected $URLSigMeth='http://www.w3.org/2000/09/xmldsig#rsa-sha1';
     /**
      * URLTransfMeth_1
      * Instância do WebService
      * @var string
      */
-    private $URLTransfMeth_1='http://www.w3.org/2000/09/xmldsig#enveloped-signature';
+    protected $URLTransfMeth_1='http://www.w3.org/2000/09/xmldsig#enveloped-signature';
     /**
      * URLTransfMeth_2
      * Instância do WebService
      * @var string
      */
-    private $URLTransfMeth_2='http://www.w3.org/TR/2001/REC-xml-c14n-20010315';
+    protected $URLTransfMeth_2='http://www.w3.org/TR/2001/REC-xml-c14n-20010315';
     /**
      * URLDigestMeth
      * Instância do WebService
      * @var string
      */
-    private $URLDigestMeth='http://www.w3.org/2000/09/xmldsig#sha1';
+    protected $URLDigestMeth='http://www.w3.org/2000/09/xmldsig#sha1';
     /**
      * URLPortal
      * Instância do WebService
@@ -502,7 +502,7 @@ class ToolsNFePHP {
      * Lista dos numeros identificadores dos estados
      * @var array
      */
-    private $cUFlist = array('AC'=>'12',
+    protected $cUFlist = array('AC'=>'12',
                              'AL'=>'27',
                              'AM'=>'13',
                              'AP'=>'16',
@@ -647,7 +647,8 @@ class ToolsNFePHP {
      * @param number $mododebug Opcional 2-Não altera nenhum paraâmetro 1-SIM ou 0-NÃO (2 default)
      * @return  boolean true sucesso false Erro
      */
-    function __construct($aConfig='',$mododebug=2,$exceptions=false) {
+    public function __construct($aConfig='',$mododebug=2,$exceptions=false) {
+
         if(is_numeric($mododebug)){
             $this->debugMode = $mododebug;
         }
@@ -859,6 +860,8 @@ class ToolsNFePHP {
     * A validação não deve ser feita após a inclusão do protocolo !!!
     * Caso seja passado uma NFe ainda não assinada a falta da assinatura será desconsiderada.
     * @name validXML
+    * @version 3.0.3
+    * @package NFePHP
     * @author Roberto L. Machado <linux.rlm at gmail dot com>
     * @param    string  $xml  string contendo o arquivo xml a ser validado ou seu path
     * @param    string  $xsdfile Path completo para o arquivo xsd
@@ -870,8 +873,8 @@ class ToolsNFePHP {
         // Habilita a manipulaçao de erros da libxml
         libxml_use_internal_errors(true);
         //verifica se foi passado o xml
-        if(strlen($xml)==0){
-            $msg = 'Você deve passar o conteudo do xml assinado como parâmetro ou o caminho completo até o arquivo.';
+        if($xml==''){
+            $msg = 'Você deve passar o conteudo do xml assinado como parâmetro.';
             $this->__setError($msg);
             if ($this->exceptions) {
                 throw new nfephpException($msg, self::STOP_CRITICAL);
@@ -889,8 +892,6 @@ class ToolsNFePHP {
         } else {
             $dom->loadXML($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
         }
-        //limpar erros anteriores que possam estar em memória
-        libxml_clear_errors();        
         //recupera os erros da libxml
         $errors = libxml_get_errors(); 
         if (!empty($errors)) { 
@@ -979,8 +980,6 @@ class ToolsNFePHP {
                             ,"The document has no document element"
                             ,"[facet 'enumeration']"
                             ,"one of"
-                            ,"failed to load external entity" 
-                            ,"Failed to locate the main schema resource at"
                             ,"This element is not expected. Expected is"                     
                             ,"is not an element of the set");
               
@@ -1001,8 +1000,6 @@ class ToolsNFePHP {
                             ,"Falta uma tag no documento"
                             ,"[Erro 'Conteúdo']"
                             ,"um de"
-                            ,"falha ao carregar entidade externa"
-                            ,"Falha ao tentar localizar o schema principal em"
                             ,"Este elemento não é esperado. Esperado é"
                             ,"não é um dos seguintes possiveis");
                 
@@ -1321,6 +1318,9 @@ class ToolsNFePHP {
      *        cStat = 114 SCAN dasativado pela SEFAZ de origem    
      * se SCAN estiver ativado usar, caso contrario aguardar pacientemente.
      * @name statusServico
+     * @version 2.0.6
+     * @package NFePHP
+     * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string $UF sigla da unidade da Federação
      * @param   integer $tpAmb tipo de ambiente 1-produção e 2-homologação
      * @param   integer 1 usa o __sendSOAP e 2 usa o __sendSOAP2
@@ -1365,7 +1365,7 @@ class ToolsNFePHP {
             $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb,$UF);
         }
         //verifica o retorno do SOAP
-        if ($retorno) {
+        if ( isset($retorno) ) {
             //tratar dados de retorno
             $doc = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
             $doc->formatOutput = false;
@@ -1626,6 +1626,9 @@ class ToolsNFePHP {
         $sNFe = str_replace(array("\r","\n","\s"),"",$sNFe);
         //montagem do cabeçalho da comunicação SOAP
         $cabec = '<nfeCabecMsg xmlns="'.$namespace.'"><cUF>'.$this->cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
+
+        var_dump($cabec);
+
         //montagem dos dados da mensagem SOAP
         $dados = '<nfeDadosMsg xmlns="'.$namespace.'"><enviNFe xmlns="'.$this->URLPortal.'" versao="'.$versao.'"><idLote>'.$idLote.'</idLote>'.$sNFe.'</enviNFe></nfeDadosMsg>';
         //envia dados via SOAP
@@ -2279,7 +2282,7 @@ class ToolsNFePHP {
      * - O xml do processo de cancelamento será salvo na pasta Canceladas
      *      
      * @name cancelNF
-     * ATENCAO : esta rotina para de funcionar em 01/12/2012 conforme NT 2011_06
+     * @version 2.2.6
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string  $chNFe   Chave da NFe com 44 digitos
@@ -2447,233 +2450,7 @@ class ToolsNFePHP {
         }
         return $procXML;
     } // fim cancelNF
-    
-    /**
-     * cancelEvent
-     * Solicita o cancelamento de NFe autorizada
-     * - O xml do evento de cancelamento será salvo na pasta Canceladas
-     *      
-     * @name cancelEvent
-     * @param string $chNFe
-     * @param string $nProt
-     * @param string $xJust
-     * @param number $tpAmb
-     * @param number $modSOAP
-     */
-    public function cancelEvent($chNFe='',$nProt='',$xJust='',$tpAmb='',$modSOAP='2'){
-        //validação dos dados de entrada
-        if($chNFe == '' || $nProt == '' || $xJust == ''){
-            $msg = "Não foi passado algum dos parâmetros necessários ID=$chNFe ou protocolo=$nProt ou justificativa=$xJust.";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
-            return false;
-        }
-        if($tpAmb == ''){
-            $tpAmb = $this->tpAmb;
-        }
-        if (strlen($xJust) < 15){
-            $msg = "A justificativa deve ter pelo menos 15 digitos!!";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
-            return false;
-        }
-        if (strlen($xJust) > 255){
-            $msg = "A justificativa deve ter no máximo 255 digitos!!";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
-            return false;
-        }
-        if (strlen($chNFe) != 44){
-            $msg = "Uma chave de NFe válida não foi passada como parâmetro $chNFe.";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
-            return false;
-        }
-        //estabelece o codigo do tipo de evento CANCELAMENTO
-        $tpEvento = '110111';
-        $descEvento = 'Cancelamento';
-        //para cancelamento o numero sequencia do evento sempre será 1
-        $nSeqEvento = '1';
-        //remove qualquer caracter especial
-        $xJust = $this->__cleanString($xJust);
-        //decompor a chNFe e pegar o tipo de emissão
-        $tpEmiss = substr($chNFe, 34, 1);
-        //verifica se o SCAN esta habilitado
-        if (!$this->enableSCAN){
-            $aURL = $this->aURL;
-        } else {
-            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'SCAN');
-        }
-        $numLote = substr(str_replace(',','',number_format(microtime(true)*1000000,0)),0,15);
-        //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
-        $dhEvento = date('Y-m-d').'T'.date('H:i:s').$this->timeZone;
-        //se o envio for para svan mudar o numero no orgão para 91
-        if ($this->enableSVAN){
-            $cOrgao='91';
-        } else {
-            $cOrgao=$this->cUF;
-        }
-        //montagem do namespace do serviço
-        $servico = 'RecepcaoEvento';
-        //recuperação da versão
-        $versao = $aURL[$servico]['version'];
-        //recuperação da url do serviço
-        $urlservico = $aURL[$servico]['URL'];
-        //recuperação do método
-        $metodo = $aURL[$servico]['method'];
-        //montagem do namespace do serviço
-        $namespace = $this->URLPortal.'/wsdl/'.$servico;
-        //de acordo com o manual versão 5 de março de 2012
-        // 2   +    6     +    44         +   2  = 54 digitos
-        //“ID” + tpEvento + chave da NF-e + nSeqEvento
-        //garantir que existam 2 digitos em nSeqEvento para montar o ID com 54 digitos
-        if (strlen(trim($nSeqEvento))==1){
-            $zenSeqEvento = str_pad($nSeqEvento, 2, "0", STR_PAD_LEFT);
-        } else {
-            $zenSeqEvento = trim($nSeqEvento);
-        }
-        $id = "ID".$tpEvento.$chNFe.$zenSeqEvento;
-        //monta mensagem
-        $Ev='';
-        $Ev .= "<evento xmlns=\"$this->URLPortal\" versao=\"$versao\">";
-        $Ev .= "<infEvento Id=\"$id\">";
-        $Ev .= "<cOrgao>$cOrgao</cOrgao>";
-        $Ev .= "<tpAmb>$tpAmb</tpAmb>";
-        $Ev .= "<CNPJ>$this->cnpj</CNPJ>";
-        $Ev .= "<chNFe>$chNFe</chNFe>";
-        $Ev .= "<dhEvento>$dhEvento</dhEvento>";
-        $Ev .= "<tpEvento>$tpEvento</tpEvento>";
-        $Ev .= "<nSeqEvento>$nSeqEvento</nSeqEvento>";
-        $Ev .= "<verEvento>$versao</verEvento>";
-        $Ev .= "<detEvento versao=\"$versao\">";
-        $Ev .= "<descEvento>$descEvento</descEvento>";
-        $Ev .= "<nProt>$nProt</nProt>";
-        $Ev .= "<xJust>$xJust</xJust>";
-        $Ev .= "</detEvento></infEvento></evento>";
-        //assinatura dos dados
-        $tagid = 'infEvento';
-        $Ev = $this->signXML($Ev, $tagid);
-        $Ev = str_replace('<?xml version="1.0"?>','', $Ev);
-        $Ev = str_replace('<?xml version="1.0" encoding="utf-8"?>','', $Ev);
-        $Ev = str_replace('<?xml version="1.0" encoding="UTF-8"?>','', $Ev);
-        $Ev = str_replace(array("\r","\n","\s"),"", $Ev);
-        //carrega uma matriz temporária com os eventos assinados
-        //montagem dos dados 
-        $dados = '';
-        $dados .= "<envEvento xmlns=\"$this->URLPortal\" versao=\"$versao\">";
-        $dados .= "<idLote>$numLote</idLote>";
-        $dados .= $Ev;
-        $dados .= "</envEvento>";
-        //montagem da mensagem
-        $cabec = "<nfeCabecMsg xmlns=\"$namespace\"><cUF>$this->cUF</cUF><versaoDados>$versao</versaoDados></nfeCabecMsg>";
-        $dados = "<nfeDadosMsg xmlns=\"$namespace\">$dados</nfeDadosMsg>";
-        //grava solicitação em temp
-        $arqName = $this->temDir."$chNFe-$nSeqEvento-eventCanc.xml";
-        if (!file_put_contents($arqName,$Ev)){
-            $msg = "Falha na gravação do arquivo $arqName";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
-        }
-        //envia dados via SOAP
-        if ($modSOAP == '2'){
-            $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
-        } else {
-            $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb,$this->UF);
-        }
-        //verifica o retorno
-        if (!$retorno){
-            //não houve retorno
-            $msg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
-            return false;
-        }
-        //tratar dados de retorno
-        $xmlretEvent = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
-        $xmlretEvent->formatOutput = false;
-        $xmlretEvent->preserveWhiteSpace = false;
-        $xmlretEvent->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-        $retEvento = $xmlretEvent->getElementsByTagName("retEvento")->item(0);
-        $cStat = !empty($retEvento->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('cStat')->item(0)->nodeValue : '';
-        $xMotivo = !empty($retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
-        if ($cStat == ''){
-            //houve erro
-            $msg = "cStat está em branco, houve erro na comunicação Soap verifique a mensagem de erro e o debug!!";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
-            return false;
-        }
-        //erro no processamento cStat <> 135
-        if ($cStat != 135 ){
-            //se cStat <> 135 houve erro e o lote foi rejeitado
-            $msg = "Retorno de ERRO: $cStat - $xMotivo";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
-            return false;
-        }
-        //o evento foi aceito cStat == 135
-        //carregar o evento
-        $xmlenvEvento = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
-        $xmlenvEvento->formatOutput = false;
-        $xmlenvEvento->preserveWhiteSpace = false;
-        $xmlenvEvento->loadXML($Ev,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-        $evento = $xmlenvEvento->getElementsByTagName("evento")->item(0);
-        //Processo completo solicitação + protocolo
-        $xmlprocEvento = new DOMDocument('1.0', 'utf-8');; //cria objeto DOM
-        $xmlprocEvento->formatOutput = false;
-        $xmlprocEvento->preserveWhiteSpace = false;
-        //cria a tag procEventoNFe
-        $procEventoNFe = $xmlprocEvento->createElement('procEventoNFe');
-        $xmlprocEvento->appendChild($procEventoNFe);
-        //estabele o atributo de versão
-        $eventProc_att1 = $procEventoNFe->appendChild($xmlprocEvento->createAttribute('versao'));
-        $eventProc_att1->appendChild($xmlprocEvento->createTextNode($versao));
-        //estabelece o atributo xmlns
-        $eventProc_att2 = $procEventoNFe->appendChild($xmlprocEvento->createAttribute('xmlns'));
-        $eventProc_att2->appendChild($xmlprocEvento->createTextNode($this->URLportal));
-        //carrega o node evento
-        $node1 = $xmlprocEvento->importNode($evento, true);
-        $procEventoNFe->appendChild($node1);
-        //carrega o node retEvento
-        $node2 = $xmlprocEvento->importNode($retEvento, true);
-        $procEventoNFe->appendChild($node2);
-        //salva o xml como string em uma variável
-        $procXML = $xmlprocEvento->saveXML();
-        //remove as informações indesejadas
-        $procXML = str_replace("xmlns:default=\"http://www.w3.org/2000/09/xmldsig#\"",'',$procXML);
-        $procXML = str_replace('default:','',$procXML);
-        $procXML = str_replace(':default','',$procXML);
-        $procXML = str_replace("\n",'',$procXML);
-        $procXML = str_replace("\r",'',$procXML);
-        $procXML = str_replace("\s",'',$procXML);
-        //salva o arquivo xml
-        $arqName = $this->canDir."$chNFe-$nSeqEvento-procCanc.xml";
-        if (!file_put_contents($arqName, $procXML)){
-            $msg = "Falha na gravação do arquivo $arqName";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
-        }
-        return $procXML;
-    } //fim cancEvent
-    
+
     /**
      * envCCe
      * Envia carta de correção da Nota Fiscal para a SEFAZ.
@@ -2746,9 +2523,9 @@ class ToolsNFePHP {
         $numLote = substr(str_replace(',','',number_format(microtime(true)*1000000,0)),0,15);
         //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
         $dhEvento = date('Y-m-d').'T'.date('H:i:s').$this->timeZone;
-        //se o envio for para svan mudar o numero no orgão para 91
+        //se o envio for para svan mudar o numero no orgão para 90
         if ($this->enableSVAN){
-            $cOrgao='91';
+            $cOrgao='90';
         } else {
             $cOrgao=$this->cUF;
         }
@@ -3564,7 +3341,7 @@ class ToolsNFePHP {
      *     CNPJ_priKEY.pem
      *     CNPJ_pubKEY.pem
      *     CNPJ_certKEY.pem
-     *  Estes arquivos tanbém serão carregados nas variáveis da classe
+     *  Estes arquivos também serão carregados nas variáveis da classe
      *  $this->priKEY (com o caminho completo para o arquivo CNPJ_priKEY.pem)
      *  $this->pubKEY (com o caminho completo para o arquivo CNPJ_pubKEY.pem)
      *  $this->certKEY (com o caminho completo para o arquivo CNPJ_certKEY.pem)
@@ -3574,19 +3351,13 @@ class ToolsNFePHP {
      *   $this->passKey
      *
      * @name __loadCerts
+     * @version 2.1.3
+     * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	none
      * @return	boolean true se o certificado foi carregado e false se nao
      **/
     protected function __loadCerts(){
-        if(!function_exists('openssl_pkcs12_read')){
-            $msg = "Função não existente: openssl_pkcs12_read!!";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
-            return false;
-	}
         //monta o path completo com o nome da chave privada
         $this->priKEY = $this->certsDir.$this->cnpj.'_priKEY.pem';
         //monta o path completo com o nome da chave prublica
@@ -3616,6 +3387,7 @@ class ToolsNFePHP {
         }
         //carrega o certificado em um string
         $pfxContent = file_get_contents($pfxCert);
+        
         //carrega os certificados e chaves para um array denominado $x509certdata
         if (!openssl_pkcs12_read($pfxContent,$x509certdata,$this->keyPass) ){
             $msg = "O certificado não pode ser lido!! Provavelmente corrompido ou com formato inválido!!";
@@ -3678,9 +3450,9 @@ class ToolsNFePHP {
         }
         //criar novos arquivos PEM
         if ($flagNovo){
-            unlink($this->pubKEY);
-            unlink($this->priKEY);
-            unlink($this->certKEY);
+            @unlink($this->pubKEY);
+            @unlink($this->priKEY);
+            @unlink($this->certKEY);
             //recriar os arquivos pem com o arquivo pfx
             if (!file_put_contents($this->priKEY,$x509certdata['pkey'])) {
                 $msg = "Impossivel gravar no diretório!!! Permissão negada!!";
@@ -3994,6 +3766,7 @@ class ToolsNFePHP {
         $oSoapClient->__setSoapHeaders($header);
         //monta o corpo da mensagem soap
         $varBody = new SoapVar($dados,XSD_ANYXML);
+
         //faz a chamada ao metodo do webservices
         $resp = $oSoapClient->__soapCall($metodo, array($varBody) );
         if (is_soap_fault($resp)) {
@@ -4029,6 +3802,7 @@ class ToolsNFePHP {
      * @return mixed false se houve falha ou o retorno em xml do SEFAZ
      */
     protected function __sendSOAP2($urlsefaz,$namespace,$cabecalho,$dados,$metodo,$ambiente='',$UF=''){
+
         try {
             if ($urlsefaz == ''){
                 $msg = "URL do webservice não disponível no arquivo xml das URLs da SEFAZ.";
@@ -4037,6 +3811,7 @@ class ToolsNFePHP {
             if ($ambiente == ''){
                 $ambiente = $this->tpAmb;
             }
+
             $data = '';
             $data .= '<?xml version="1.0" encoding="utf-8"?>';
             $data .= '<soap12:Envelope ';
@@ -4126,7 +3901,8 @@ class ToolsNFePHP {
                 $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$ambiente,'SCAN');
                 $urlsefaz = $aURL[$servico]['URL'];
             } 
-            $parametros = Array('Content-Type: application/soap+xml;charset=utf-8;action="'.$namespace."/".$metodo.'"','SOAPAction: "'.$metodo.'"',"Content-length: $tamanho");
+            $parametros = array('Content-Type: application/soap+xml;charset=utf-8;action="'.$namespace."/".$metodo.'"','SOAPAction: "'.$metodo.'"',"Content-length: $tamanho");
+
             $_aspa = '"';
             $oCurl = curl_init();
             if(is_array($this->aProxy)){
