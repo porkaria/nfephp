@@ -26,7 +26,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     3.1.3
+ * @version     3.1.5
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -1393,7 +1393,7 @@ class ConvertNFePHP {
                         $ICMS->appendChild($ICMSSN202);
                         break;
 
-                    case "N10g": //Grupo CRT=1  Simples Nacional e CSOSN = 500 [ICMS]
+                    case "N10g": //Grupo CRT=1 Simples Nacional e CSOSN = 500 [ICMS]
                         //N10g|orig|CSOSN|vBCSTRet|vICMSSTRet|
                         // todos esses campos sao obrigatorios
                         $ICMSSN500 = $dom->createElement("ICMSSN500");
@@ -1419,7 +1419,7 @@ class ConvertNFePHP {
                             $modBC = $dom->createElement("modBC", $dados[3]);
                             $ICMSSN900->appendChild($modBC);
                         }
-                        if(!empty($dados4)){
+                        if(!empty($dados[4])){
                             $vBC = $dom->createElement("vBC", $dados[4]);
                             $ICMSSN900->appendChild($vBC);
                         }
